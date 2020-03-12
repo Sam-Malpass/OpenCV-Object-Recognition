@@ -4,13 +4,14 @@
 string* Tester::train_laptop()
 {
 	// Declare the list
-	string* arguments = new string[5];
+	string* arguments = new string[6];
 	// Add the arguments
 	arguments[0] = "ProgName";
 	arguments[1] = LAPTOP_TRAIN;
-	arguments[2] = "SVM.xml";
-	arguments[3] = "lin";
-	arguments[4] = "-train";
+	arguments[2] = LAPTOP_LABELS;
+	arguments[3] = "SVM.xml";
+	arguments[4] = "lin";
+	arguments[5] = "-train";
 	// Return the arguments
 	return arguments;
 }
@@ -19,13 +20,14 @@ string* Tester::train_laptop()
 string* Tester::test_laptop()
 {
 	// Declare the list
-	string* arguments = new string[3];
+	string* arguments = new string[6];
 	// Add the arguments
 	arguments[0] = "ProgName";
 	arguments[1] = LAPTOP_TEST;
-	arguments[2] = "SVM.xml";
-	arguments[3] = "lin";
-	arguments[4] = "-test";
+	arguments[2] = LAPTOP_LABELS;
+	arguments[3] = "SVM.xml";
+	arguments[4] = "lin";
+	arguments[5] = "-test";
 	// Return the arguments
 	return arguments;
 }
@@ -34,13 +36,14 @@ string* Tester::test_laptop()
 string* Tester::train_desktop()
 {
 	// Declare the list
-	string* arguments = new string[3];
+	string* arguments = new string[6];
 	// Add the arguments
 	arguments[0] = "ProgName";
 	arguments[1] = DESKTOP_TRAIN;
-	arguments[2] = "SVM.xml";
-	arguments[3] = "lin";
-	arguments[4] = "-train";
+	arguments[2] = DESKTOP_LABELS;
+	arguments[3] = "SVM.xml";
+	arguments[4] = "lin";
+	arguments[5] = "-train";
 	// Return the arguments
 	return arguments;
 }
@@ -49,13 +52,14 @@ string* Tester::train_desktop()
 string* Tester::test_desktop()
 {
 	// Declare the list
-	string* arguments = new string[3];
+	string* arguments = new string[6];
 	// Add the arguments
 	arguments[0] = "ProgName";
 	arguments[1] = DESKTOP_TEST;
-	arguments[2] = "SVM.xml";
-	arguments[3] = "lin";
-	arguments[4] = "-test";
+	arguments[2] = DESKTOP_LABELS;
+	arguments[3] = "SVM.xml";
+	arguments[4] = "lin";
+	arguments[5] = "-test";
 	// Return the arguments
 	return arguments;
 }
@@ -64,13 +68,14 @@ string* Tester::test_desktop()
 string* Tester::confusion_laptop()
 {
 	// Declare the list
-	string* arguments = new string[3];
+	string* arguments = new string[6];
 	// Add the arguments
 	arguments[0] = "ProgName";
 	arguments[1] = LAPTOP_TRAIN;
-	arguments[2] = "SVM.xml";
-	arguments[3] = "lin";
-	arguments[4] = "-test";
+	arguments[2] = LAPTOP_LABELS;
+	arguments[3] = "SVM.xml";
+	arguments[4] = "lin";
+	arguments[5] = "-test";
 	// Return the arguments
 	return arguments;
 }
@@ -78,13 +83,14 @@ string* Tester::confusion_laptop()
 string* Tester::confusion_desktop()
 {
 	// Declare the list
-	string* arguments = new string[3];
+	string* arguments = new string[6];
 	// Add the arguments
 	arguments[0] = "ProgName";
 	arguments[1] = DESKTOP_TRAIN;
-	arguments[2] = "SVM.xml";
-	arguments[3] = "lin";
-	arguments[4] = "-test";
+	arguments[2] = DESKTOP_LABELS;
+	arguments[3] = "SVM.xml";
+	arguments[4] = "lin";
+	arguments[5] = "-test";
 	// Return the arguments
 	return arguments;
 }

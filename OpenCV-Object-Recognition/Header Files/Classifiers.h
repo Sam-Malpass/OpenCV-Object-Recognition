@@ -3,12 +3,13 @@
 #include "FileHandler.h"
 #include "Structures.h"
 
+#define CONF_THRESHOLD 0.5
+
 using namespace std;
 using namespace cv;
 
 /* SVM for the handling of training and testing of support vector machine(s) */
 class SVM {
-	#define CONF_THRESHOLD 0.5;
 	// To allow for the saving and loading of models
 	FileHandler fileHandler;
 	// Holds the location of the file to save to or load from
@@ -18,7 +19,7 @@ class SVM {
 	// balanceData organizes the datasets so that each object has the same number of frames
 	vector<vector<Mat>> balanceData(vector<vector<Mat>> inputs);
 	// shuffleRows shuffles the training data and the corresponding training labels in the same manner
-	ShuffledData shuffleRows(Mat data, vector<int> labels);
+	Data shuffleRows(Mat data, vector<int> labels);
 public:
 	// Constructor with argument - determines train or test mode
 	SVM(bool mode, string filePath);
