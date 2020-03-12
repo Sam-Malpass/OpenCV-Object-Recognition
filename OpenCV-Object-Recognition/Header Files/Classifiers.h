@@ -3,7 +3,7 @@
 #include "FileHandler.h"
 #include "Structures.h"
 
-#define CONF_THRESHOLD 0.5
+#define CONF_THRESHOLD 0.3
 
 using namespace std;
 using namespace cv;
