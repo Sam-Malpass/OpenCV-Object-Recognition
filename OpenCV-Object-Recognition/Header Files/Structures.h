@@ -38,7 +38,7 @@ struct Contour_Data {
 /* Structure to hold data with corresponding labels */
 struct Data {
 	// List of lists of frames
-	vector<vector<Mat>> balancedData;
+	Mat trainingData;
 	// List of labels that correspond to each frame
-	vector<int> balancedLabels;
+	vector<int> trainingLabels;
 };

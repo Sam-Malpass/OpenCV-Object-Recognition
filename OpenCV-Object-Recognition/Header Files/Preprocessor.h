@@ -1,6 +1,9 @@
 #pragma once
 #include <opencv2/opencv.hpp>
-#include "Structues.h"
+#include "Structures.h"
+
+#define THRESHOLD 100
+#define SIZE Size(64,64)
 
 using namespace cv;
 
