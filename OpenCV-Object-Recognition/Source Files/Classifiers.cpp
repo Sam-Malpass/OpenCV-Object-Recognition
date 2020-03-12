@@ -47,9 +47,35 @@ vector<vector<Mat>> SVM::balanceData(vector<vector<Mat>> inputs)
 	return balanced;
 }
 
+/* Shuffles the rows of the training data so that cross validation is actually worthwhile */
 ShuffledData SVM::shuffleRows(Mat data, vector<int> labels)
 {
-	return ShuffledData();
+	ShuffledData processed;
+	// Declare a matrix to hold the shuffled data
+	Mat shuffled;
+	vector<int> shuffledLabels;
+	// Declare a vector to hold the indices of the rows
+	vector<int> indices;
+	// For all rows
+	for (int i = 0; i < data.rows; i++) {
+		// Generate a row index
+		indices.push_back(i);
+	}
+
+	// Shuffle the indices' order
+	randShuffle(indices);
+
+	// For all the rows in the data
+	for (int i = 0; i < data.rows; i++) {
+		// Add the row at the given random index to the shuffled data
+		int index = indices[i];
+		shuffled.push_back(data.row(index));
+		shuffledLabels.push_back(labels[index]);
+	}
+	processed.trainingData = shuffled;
+	processed.trainingLabels = shuffledLabels;
+	// Return the shuffled data
+	return processed;
 }
 
 /* Constructor that takes mode and filePath */
