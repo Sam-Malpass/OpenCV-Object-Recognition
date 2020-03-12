@@ -34,9 +34,42 @@ Mat Preprocessor::translateDepth(Mat depth)
 	return depthComp;
 }
 
+/* Thresholds an image and finds the object by using many small regions of interests and blurring the
+	areas that are not background together (Providing the margin between regions is small enough) */
 Mat Preprocessor::thresholdImage(Mat depth, Mat grayscale)
 {
-	return Mat();
+	// Declare an image to use for the thresholded image
+	Mat image;
+	// Threshold the depth component using the predefined threshold
+	threshold(depth, image, THRESHOLD, 255, THRESH_BINARY_INV);
+
+	// Create a region of interest that removed the last 9 pizels of the depth component
+	// This is infinite because the Kinect uses a correlation window 9 pixels wide
+	// So in order to get an accurate mean, this needs to be removed
+	Rect region(0, 0, image.size().width - 9, image.size().height);
+	Mat region_image = image(region);
+
+	// Then if the mean is 255, we know the depth is uniform (so no object)
+	if (mean(region_image)[0] == 255) {
+		// We set it to black, making it really obvious in the output where the object is
+		image = Mat::zeros(image.rows, image.cols, CV_8UC1);
+	}
+
+	// Then we clean up th thresholded image
+	bitwise_and(image, grayscale, grayscale);
+	bitwise_or(image, grayscale, image);
+
+	// Next will use dilation on the thresholded image to joind regions that are separated by a small margin
+	// This is done through blurring
+	// This should result in the small regions that make up the object being blurred together
+	// then show the object shape as a whole
+	int blur_constant = 4;
+	// Use an elliptic element for the blurring/dilation
+	Mat element = getStructuringElement(MORPH_ELLIPSE, Size(2 * blur_constant + 1, 2 * blur_constant + 1), Point(blur_constant, blur_constant));
+	// Apply the process
+	dilate(image, image, element);
+	// Return the image
+	return image;
 }
 
 Contour_Data Preprocessor::findContours(Mat thresholded_image)

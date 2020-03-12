@@ -1,5 +1,8 @@
 #pragma once
+#include <opencv2/opencv.hpp>
 #include "Structues.h"
+
+using namespace cv;
 
 /* Preprocessor class handles the preprocessing of frames so they can be used in conjunction with the SVM */
 class Preprocessor {
