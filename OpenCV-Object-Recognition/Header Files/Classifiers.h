@@ -6,6 +6,7 @@ using namespace cv;
 
 /* SVM for the handling of training and testing of support vector machine(s) */
 class SVM {
+	#define CONF_THRESHOLD 0.5;
 	// The actual SVM - Needed in test mode
 	Ptr<ml::SVM> model;
 	// balanceData organizes the datasets so that each object has the same number of frames
