@@ -19,9 +19,19 @@ Mat Preprocessor::toGrayscale(Mat rgb)
 	return grayscale;
 }
 
+/* Translates a depth component matrix to be more inline with RGB */
 Mat Preprocessor::translateDepth(Mat depth)
 {
-	return Mat();
+	// Create a copy of the depth Component
+	Mat depthComp = depth;
+	// Create a translation matrix that will be used to translate the depth component
+	Mat translation = (Mat_<double>(2, 3) << 1, 0, -38, 0, 1, 25);
+	// Apply the transformation to the depth component
+	warpAffine(depth, depthComp, translation, depthComp.size(), INTER_LINEAR, BORDER_CONSTANT, 255);
+	// THis pushed the background pixel values towards infinity (Making normalization more effective at separating the arm and the object)
+	depthComp = depthComp + 158;
+	// Return the translated component
+	return depthComp;
 }
 
 Mat Preprocessor::thresholdImage(Mat depth, Mat grayscale)
