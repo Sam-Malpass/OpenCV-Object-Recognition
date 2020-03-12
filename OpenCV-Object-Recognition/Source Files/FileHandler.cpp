@@ -35,6 +35,9 @@ Ptr<ml::SVM> FileReader::loadModel(string filePath)
 	return ml::StatModel::load<ml::SVM>(filePath);;
 }
 
+/* Saves the model to a given file */
 void FileReader::saveModel(Ptr<ml::SVM> model, string filePath)
 {
+	// Save the model
+	model->save(filePath)
 }
