@@ -2,6 +2,7 @@
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
+using namespace std;
 
 /* Structure for storing the image data of the frames, keeping both the RGB Components and the Depth Components */
 struct Image {
@@ -19,4 +20,25 @@ struct Processed_Image {
 	Mat RGB_Masked;
 	// A vector of points that make up the contour of the image
 	vector<Point> outline;
+};
+
+/* Structure for storing contour data in the image */
+/* Includes the outline of the object, a bounding rectangle and a bounding circle*/
+struct Contour_Data {
+	// List of lists of points that define sections of the object
+	vector<vector<Point>> contours;
+	// Bounding rectangle
+	Rect rectangle;
+	// Center of the bounding circle
+	Point2f center;
+	// Radius of the bounding circle
+	float radius;
+};
+
+/* Structure to hold data with corresponding labels */
+struct Data {
+	// List of lists of frames
+	vector<vector<Mat>> balancedData;
+	// List of labels that correspond to each frame
+	vector<int> balancedLabels;
 };
