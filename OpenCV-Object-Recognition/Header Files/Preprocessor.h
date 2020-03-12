@@ -1,6 +1,6 @@
 #pragma once
 #include <opencv2/opencv.hpp>
-#include "Structues.h"
+#include "Structures.h"
 
 using namespace cv;
 
