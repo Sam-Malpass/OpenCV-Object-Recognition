@@ -28,9 +28,11 @@ vector<string> FileReader::readLabels(string filePath)
 	return labels;
 }
 
+/* Loads the model in the given file */
 Ptr<ml::SVM> FileReader::loadModel(string filePath)
 {
-	return Ptr<ml::SVM>();
+	// Return the loaded model
+	return ml::StatModel::load<ml::SVM>(filePath);;
 }
 
 void FileReader::saveModel(Ptr<ml::SVM> model, string filePath)
