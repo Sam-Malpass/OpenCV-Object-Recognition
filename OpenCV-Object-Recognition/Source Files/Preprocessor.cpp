@@ -72,7 +72,66 @@ Mat Preprocessor::thresholdImage(Mat depth, Mat grayscale)
 	return image;
 }
 
+/* Finds the contours, rectangle and circle bounds of the thresholded image */
 Contour_Data Preprocessor::findContours(Mat thresholded_image)
 {
-	return Contour_Data();
+	// Declare a list of contours
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierarchy;
+
+	// Use the OpenCV variant to find all the contours
+	cv::findContours(thresholded_image, contours, hierarchy, RETR_CCOMP, CHAIN_APPROX_SIMPLE);
+
+	// Dummy variables to help us find the largest contour
+	// In theory this will be the object
+	int largest_contour = -1;
+	double area = 0;
+
+	// For all the contorus in the list
+	for (int i = 0; i < contours.size(); i++) {
+		// Set a temporary variable to the area of the contour
+		double tmp = contourArea(contours[i], false);
+		// If that temporary variable is then greater than the area of the contour
+		if (tmp > area) {
+			// Set the area tracking variable to the temporary one
+			area = tmp;
+			// Set the largest contour to be the index of the contour
+			largest_contour = i;
+		}
+	}
+
+	// Now we need to approximate the contours into polygons
+	// as well as define the bounding rectangle and circle
+	vector<vector<Point>> polygon(contours.size());
+	Rect bound;
+	Point2f center;
+	float rad = 0;
+
+	// If there are contours and we successfully found a largest contour
+	if (contours.size() > 0 && largest_contour != -1) {
+		// Approximate the polygon for the largest contour
+		// Basically the outline of the object
+		approxPolyDP(Mat(contours[largest_contour]), polygon[0], 3, true);
+		// Create the rectangle using said polygon
+		bound = boundingRect(Mat(polygon[0]));
+		// Create the smallest circle that encapsulates the polygon
+		minEnclosingCircle((Mat)polygon[0], center, rad);
+
+		// Remove noise
+		if (bound.size().width < 100 && (bound.size().height < 40 || bound.br().x > 590 || (bound.size().height < 100 && bound.br().y > 440))) {
+			bound = Rect(0, 0, 0, 0);
+			polygon.clear();
+			center = Point2f(0, 0);
+			rad = 0;
+		}
+	}
+
+	// Then we convert the found variables into the struct
+	Contour_Data packet;
+	packet.contours = polygon;
+	packet.rectangle = bound;
+	packet.center = center;
+	packet.radius = rad;
+	// Return the struct
+	return packet;
 }
