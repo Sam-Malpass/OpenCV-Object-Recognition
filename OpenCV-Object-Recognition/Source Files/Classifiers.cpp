@@ -98,7 +98,29 @@ void SVM::trainSVM(string kernel, vector<vector<Mat>> data)
 {
 }
 
+/* Predicts the class of the given data point */
 int SVM::predictSVM(Mat data)
 {
-	return 0;
+	// Declare the class number
+	int class_number = -1;
+	// Declare a matrix to get the resuts of the SVM
+	Mat result;
+	// Get the full outputs of the SVM
+	model->predict(data, result, ml::StatModel::Flags::RAW_OUTPUT);
+	// Get the classification of the SVM
+	class_number = model->predict(data);
+	// Get the distance
+	float dist = result.at<float>(0, 0);
+	// Get then the confidence that the class is correct
+	float confidence = (1.0 / (1.0 + exp(-dist)));
+	// If the confidence is greater than the threshold
+	if (confidence > CONF_THRESHOLD) {
+		// Return the new class number
+		return class_number;
+	}
+	// Otherwise
+	else {
+		// Return -1 (Unrecognized)
+		return -1;
+	}
 }
