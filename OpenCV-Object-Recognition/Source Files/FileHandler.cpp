@@ -1,7 +1,7 @@
 #include "FileHandler.h"
 
 /* Takes a file path as argument then reads and returns a list of class labels */
-vector<string> FileReader::readLabels(string filePath)
+vector<string> FileHandler::readLabels(string filePath)
 {
 	// Create the list
 	vector<string> labels;
@@ -29,15 +29,15 @@ vector<string> FileReader::readLabels(string filePath)
 }
 
 /* Loads the model in the given file */
-Ptr<ml::SVM> FileReader::loadModel(string filePath)
+Ptr<ml::SVM> FileHandler::loadModel(string filePath)
 {
 	// Return the loaded model
 	return ml::StatModel::load<ml::SVM>(filePath);;
 }
 
 /* Saves the model to a given file */
-void FileReader::saveModel(Ptr<ml::SVM> model, string filePath)
+void FileHandler::saveModel(Ptr<ml::SVM> model, string filePath)
 {
 	// Save the model
-	model->save(filePath)
+	model->save(filePath);
 }
