@@ -1,6 +1,7 @@
 #pragma once
 #include <opencv2/opencv.hpp>
 #include "FileHandler.h"
+#include "Structures.h"
 
 using namespace std;
 using namespace cv;

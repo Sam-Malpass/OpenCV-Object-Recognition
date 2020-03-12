@@ -48,9 +48,9 @@ vector<vector<Mat>> SVM::balanceData(vector<vector<Mat>> inputs)
 }
 
 /* Shuffles the rows of the training data so that cross validation is actually worthwhile */
-ShuffledData SVM::shuffleRows(Mat data, vector<int> labels)
+Data SVM::shuffleRows(Mat data, vector<int> labels)
 {
-	ShuffledData processed;
+	Data processed;
 	// Declare a matrix to hold the shuffled data
 	Mat shuffled;
 	vector<int> shuffledLabels;
@@ -94,8 +94,65 @@ SVM::SVM(bool mode, string filePath)
 	}
 }
 
+#/* Trains an SVM using the specified kernel and training data */
 void SVM::trainSVM(string kernel, vector<vector<Mat>> data)
 {
+	// Create the model
+	model = ml::SVM::create();
+	// Set the type to classifier
+	model->setType(ml::SVM::C_SVC);
+	// Set the termination criteria
+	model->setTermCriteria(TermCriteria(TermCriteria::MAX_ITER, 500, 1e-6));
+	// Declare the training labels list
+	vector<int> training_labels;
+	// Declare the input training data
+	Mat training_data;
+	// Declare the dummy label
+	int label = 0;
+	// Balance the input data
+	cout << "Balancing Data..." << endl;
+	data = balanceData(data);
+	cout << "Generating Input Matrix..." << endl;
+	// Setup training labels - For all class specific frames
+	for (vector<Mat> object : data) {
+		// For all frames in the sample
+		for (Mat m : object) {
+			// Add the frame to the training data matrix
+			training_data.push_back(m);
+			// Push the current label onto the list
+			training_labels.push_back(label);
+		}
+		// Increment the label (Coincides with object change)
+		label++;
+	}
+	// Output current status
+	cout << "Shuffling the data..." << endl;
+	// Shuffle the training data
+	Data shuffled = shuffleRows(training_data, training_labels);
+	// Output current status
+	cout << "Shuffling completed!" << endl;
+	// Grab the shuffled data and labels
+	training_data = shuffled.trainingData;
+	training_labels = shuffled.trainingLabels;
+	// Output current status
+	cout << "Starting optimization/training process. This may take some time..." << endl;
+	// Depending on the desired kernel
+	if (kernel == "lin") {
+		// A linear kernel
+		model->setKernel(ml::SVM::LINEAR);
+		// Train and attempt to optimize hyperparameters
+		model->trainAuto(training_data, ml::ROW_SAMPLE, training_labels, 10, ml::SVM::getDefaultGridPtr(ml::SVM::C), ml::SVM::getDefaultGridPtr(ml::SVM::GAMMA), ml::SVM::getDefaultGridPtr(ml::SVM::P), cv::ml::SVM::getDefaultGridPtr(ml::SVM::NU), ml::SVM::getDefaultGridPtr(ml::SVM::COEF), ml::SVM::getDefaultGridPtr(ml::SVM::DEGREE));
+	}
+	else if (kernel == "rbf") {
+		// An RBF kernel
+		model->setKernel(ml::SVM::RBF);
+		// Train and attempt to optimize hyperparameters
+		model->trainAuto(training_data, ml::ROW_SAMPLE, training_labels, 10, ml::SVM::getDefaultGridPtr(ml::SVM::C), ml::SVM::getDefaultGridPtr(ml::SVM::GAMMA));
+	}
+	// Save the model to the file
+	fileHandler.saveModel(model, fileName);
+	// Output current status
+	cout << "Process complete, you may now close the application" << endl;
 }
 
 /* Predicts the class of the given data point */
