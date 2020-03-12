@@ -7,7 +7,7 @@ using namespace std;
 using namespace cv;
 
 /* FileReader class is used for reading class labels from a given file and saving/loading models from a given file */
-class FileReader {
+class FileHandler {
 public:
 	// readLabels takes a filePath and then reads all the class labels from the file
 	vector<string> readLabels(string filePath);
