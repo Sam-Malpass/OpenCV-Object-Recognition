@@ -1,9 +1,12 @@
-﻿// OpenCV-Object-Recognition.cpp : Defines the entry point for the application.
-//
-
+﻿#include "Classifiers.h"
+#include "FileHandler.h"
+#include "Preprocessor.h"
+#include "Structures.h"
+#include "ConfusionMatrix.h"
 #include "OpenCV-Object-Recognition.h"
 
 using namespace std;
+using namespace cv;
 
 int main()
 {
