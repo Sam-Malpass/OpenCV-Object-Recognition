@@ -18,7 +18,7 @@ void main(int argc, string args[])
 
 	// Declare object for the testing
 	Tester tester;
-	args = tester.test(2);
+	args = tester.test(1);
 	argc = sizeof(args);
 
 	// Declare variables for the application to run

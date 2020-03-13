@@ -10,7 +10,7 @@ string* Tester::train_laptop()
 	arguments[1] = LAPTOP_TRAIN;
 	arguments[2] = LAPTOP_LABELS;
 	arguments[3] = "SVM.xml";
-	arguments[4] = "lin";
+	arguments[4] = "rbf";
 	arguments[5] = "-train";
 	// Return the arguments
 	return arguments;
