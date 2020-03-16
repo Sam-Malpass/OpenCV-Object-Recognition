@@ -18,7 +18,7 @@ void main(int argc, string args[])
 
 	// Declare object for the testing
 	Tester tester;
-	args = tester.test(1);
+	args = tester.test(5);
 	argc = sizeof(args);
 
 	// Declare variables for the application to run
@@ -182,8 +182,8 @@ void main(int argc, string args[])
 			if (drawing_info.rectangle.area() > 0 && drawing_info.rectangle.br().x <= 590) {
 
 				// REMOVE LATER MAYBE
-				//drawContours(masked, drawing_info.contours, 0, Scalar(255, 255, 255), FILLED);
-				//bitwise_and(curr_frame.RGB_Component, masked, masked);
+				drawContours(masked, drawing_info.contours, 0, Scalar(255, 255, 255), FILLED);
+				bitwise_and(curr_frame.RGB_Component, masked, masked);
 
 				// Alert the console if an object has appeared and toggle the flag
 				if (!object_present)
@@ -197,13 +197,25 @@ void main(int argc, string args[])
 				Mat svmVector;
 				// Resize each frame/region of interest to a specific size
 				resize(masked(drawing_info.rectangle).clone(), standardSize, SIZE, INTER_CUBIC);
+				imshow("Trimmed Masked", masked(drawing_info.rectangle));
 				// Reshape that matrix to a vector and push it into the svmMatrix
 				svmVector.push_back(standardSize.reshape(1, 1));
 
+				/*
+				Mat hsv;
+				cvtColor(masked(drawing_info.rectangle).clone(), hsv ,COLOR_BGR2HSV);
+				resize(hsv, standardSize, SIZE, INTER_CUBIC);
+				// Reshape that matrix to a vector and push it into the svmMatrix
+				svmVector.push_back(standardSize.reshape(1, 1));
+				*/
+
+				
+				
 				// Now we want to add the depth component to the vector
 				cvtColor(raw_depth, raw_depth, COLOR_GRAY2BGR);
 				// Resize the depth component in the region of interest
 				resize(raw_depth(drawing_info.rectangle).clone(), standardSize, SIZE, INTER_CUBIC);
+				imshow("Trimmed Depth", raw_depth(drawing_info.rectangle));
 				// Reshape that matrix into a vector and push it into the svmMatrix
 				svmVector.push_back(standardSize.reshape(1, 1));
 
@@ -253,7 +265,6 @@ void main(int argc, string args[])
 				row.counts = class_counts;
 				conMat.rows.push_back(row);
 				class_counts = vector<int>(unique_labels.size());
-				//cout << "ROW: " << row.object_no << " " << row.counts.size();
 			}
 		}
 		// Clone the RGB_component
@@ -276,6 +287,7 @@ void main(int argc, string args[])
 		key = cv::waitKey(10);
 	}
 	if (mode == false) {
+		Calculations calculator;
 		string matrix;
 		for (int i = -1; i < unique_labels.size(); i++) {
 			if (i == -1) {
@@ -289,11 +301,12 @@ void main(int argc, string args[])
 		for (Confusion_Matrix_Row row : conMat.rows) {
 			matrix += row.object_no + "\t";
 			for (int i : row.counts) {
-				matrix += i + "\t";
+				matrix += to_string(i) + "\t";
 			}
 			matrix += "\n";
 		}
-		cout << matrix;
+		cout << matrix << endl;
+		cout << "Accuracy: " << calculator.accuracy(conMat) << "   Precision: " << calculator.precision(conMat) << "   Recall: " << calculator.recall(conMat) << "   F-Score:" << calculator.fmeasure(conMat) << endl;
 	}
 	if (mode == true) {
 		cout << "Training of the SVM will now commence, please wait..." << endl;

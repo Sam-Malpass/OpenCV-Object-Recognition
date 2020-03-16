@@ -1,5 +1,6 @@
 #pragma once
 #include<vector>
+#include<string>
 
 using namespace std;
 
@@ -15,4 +16,12 @@ struct Confusion_Matrix_Row {
 struct Confusion_Matrix {
 	// A list of confusion matrix rows
 	vector<Confusion_Matrix_Row> rows;
+};
+
+class Calculations {
+public:
+	double accuracy(Confusion_Matrix matrix);
+	double precision(Confusion_Matrix matrix);
+	double recall(Confusion_Matrix matrix);
+	double fmeasure(Confusion_Matrix matrix);
 };
