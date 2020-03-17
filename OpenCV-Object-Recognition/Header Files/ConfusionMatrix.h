@@ -19,9 +19,9 @@ struct Confusion_Matrix {
 };
 
 class Calculations {
+	vector<double> precision(Confusion_Matrix matrix);
+	vector<double> recall(Confusion_Matrix matrix);
 public:
 	double accuracy(Confusion_Matrix matrix);
-	double precision(Confusion_Matrix matrix);
-	double recall(Confusion_Matrix matrix);
 	double fmeasure(Confusion_Matrix matrix);
 };
