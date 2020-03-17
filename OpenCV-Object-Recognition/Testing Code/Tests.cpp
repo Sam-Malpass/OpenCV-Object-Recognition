@@ -64,37 +64,6 @@ string* Tester::test_desktop()
 	return arguments;
 }
 
-
-string* Tester::confusion_laptop()
-{
-	// Declare the list
-	string* arguments = new string[6];
-	// Add the arguments
-	arguments[0] = "ProgName";
-	arguments[1] = LAPTOP_TRAIN;
-	arguments[2] = LAPTOP_LABELS;
-	arguments[3] = "SVM.xml";
-	arguments[4] = "lin";
-	arguments[5] = "-test";
-	// Return the arguments
-	return arguments;
-}
-
-string* Tester::confusion_desktop()
-{
-	// Declare the list
-	string* arguments = new string[6];
-	// Add the arguments
-	arguments[0] = "ProgName";
-	arguments[1] = DESKTOP_TRAIN;
-	arguments[2] = DESKTOP_LABELS;
-	arguments[3] = "SVM.xml";
-	arguments[4] = "lin";
-	arguments[5] = "-test";
-	// Return the arguments
-	return arguments;
-}
-
 /* Takes the integer argument and returns the corresponding arguments */
 string* Tester::test(int test)
 {
@@ -108,10 +77,6 @@ string* Tester::test(int test)
 		return train_desktop();
 	case 4:
 		return test_desktop();
-	case 5:
-		return confusion_laptop();
-	case 6:
-		return confusion_desktop();
 	default:
 		return test_laptop();
 	}

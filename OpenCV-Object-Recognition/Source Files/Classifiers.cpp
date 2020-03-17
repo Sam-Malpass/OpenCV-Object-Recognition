@@ -1,5 +1,5 @@
 #include "Classifiers.h"
-
+#include "ConfusionMatrix.h"
 /* Finds the class with the smallest number of frames, then ensures that all the classes have that number of frames */
 vector<vector<Mat>> SVM::balanceData(vector<vector<Mat>> inputs)
 {
@@ -9,7 +9,8 @@ vector<vector<Mat>> SVM::balanceData(vector<vector<Mat>> inputs)
 	int smallest = INT_MAX;
 
 	// For all class samples
-	for (vector<Mat> object : inputs) {
+	for (int i = 0; i < inputs.size(); i++) {
+		vector<Mat> object = inputs[i];
 		// Check if the sample size is less than the current smallest
 		if (sizeof(object) < INT_MAX) {
 			// Update the smallest sample size
@@ -47,6 +48,25 @@ vector<vector<Mat>> SVM::balanceData(vector<vector<Mat>> inputs)
 	return balanced;
 }
 
+vector<vector<Mat>> SVM::removeTest(vector<vector<Mat>> inputs)
+{
+	int amount = (inputs[0].size() * 0.1);
+	vector<vector<Mat>> updated;
+	for (vector<Mat> in : inputs) {
+		vector<Mat> newAge;
+		vector<Mat> newTest;
+		for (int i = 0; i < amount; i++) {
+			newTest.push_back(in[i]);
+		}
+		testSet.push_back(newTest);
+		for (int i = amount; i < in.size(); i++) {
+			newAge.push_back(in[i]);
+		}
+		updated.push_back(newAge);
+	}
+	return updated;
+}
+
 /* Shuffles the rows of the training data so that cross validation is actually worthwhile */
 Data SVM::shuffleRows(Mat data, vector<int> labels)
 {
@@ -76,6 +96,39 @@ Data SVM::shuffleRows(Mat data, vector<int> labels)
 	processed.trainingLabels = shuffledLabels;
 	// Return the shuffled data
 	return processed;
+}
+
+void SVM::afterTest()
+{
+	Confusion_Matrix conMat;
+	int current_object = 0;
+	for (vector<Mat> object : testSet) {
+		Confusion_Matrix_Row row;
+		row.object_no = to_string(current_object);
+		vector<int> class_counts(testSet.size());
+		for (Mat vector : object) {
+			int prediction = model->predict(vector);
+			class_counts[prediction] += 1;
+		}
+		row.counts = class_counts;
+		conMat.rows.push_back(row);
+		current_object++;
+	}
+
+	for (int i = 0; i < testSet.size(); i++) {
+		cout << "Class " << to_string(i) << "\t";
+	}
+	cout << endl;
+	for (Confusion_Matrix_Row row : conMat.rows) {
+		cout << "Class " << row.object_no << "\t";
+		for (int j : row.counts) {
+			cout << to_string(j) << "\t";
+		}
+		cout << endl;
+	}
+	
+	Calculations calc;
+	cout << "Accuracy: " << calc.accuracy(conMat) << "\tF1 Score: " << calc.fmeasure(conMat) << endl;
 }
 
 /* Constructor that takes mode and filePath */
@@ -112,7 +165,9 @@ void SVM::trainSVM(string kernel, vector<vector<Mat>> data)
 	// Balance the input data
 	cout << "Balancing Data..." << endl;
 	data = balanceData(data);
+	cout << to_string(data[0].size()) << endl;
 	cout << "Generating Input Matrix..." << endl;
+	data = removeTest(data);
 	// Setup training labels - For all class specific frames
 	for (vector<Mat> object : data) {
 		// For all frames in the sample
@@ -151,6 +206,8 @@ void SVM::trainSVM(string kernel, vector<vector<Mat>> data)
 	}
 	// Save the model to the file
 	fileHandler.saveModel(model, fileName);
+	cout << "Application will now test model on the test subset" << endl;
+	afterTest();
 	// Output current status
 	cout << "Process complete, you may now close the application" << endl;
 }

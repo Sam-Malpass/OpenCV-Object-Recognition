@@ -7,8 +7,6 @@
 #include "freenect-playback-wrapper.h"
 #include "OpenCV-Object-Recognition.h"
 
-#include <iostream>
-
 using namespace std;
 using namespace cv;
 
@@ -18,7 +16,7 @@ void main(int argc, string args[])
 
 	// Declare object for the testing
 	Tester tester;
-	args = tester.test(1);
+	args = tester.test(2);
 	argc = sizeof(args);
 
 	// Declare variables for the application to run
@@ -27,7 +25,7 @@ void main(int argc, string args[])
 	string modelPath;
 	string kernel;
 	bool mode;
-
+	int set;
 	// Code to interpret command line args
 	if (argc < 5) {
 		// Output error and return
@@ -37,6 +35,12 @@ void main(int argc, string args[])
 	else {
 		// Get the arguments
 		dataPath = args[1];
+		string set1 = "Set1";
+		string set2 = "Set2";
+		if (!(dataPath.find(set1) != string::npos) && !(dataPath.find(set2) != string::npos)) {
+			cout << "Please use a valid Data folder here" << endl << "Must be either Set1 or Set2" << endl;
+			return;
+		}
 		labelPath = args[2];
 		modelPath = args[3];
 		kernel = args[4];
@@ -51,6 +55,16 @@ void main(int argc, string args[])
 			mode = true;
 		}
 		else if (args[5] == "-test") {
+			if (dataPath.find(set1) != string::npos) {
+				set = 1;
+			}
+			else if (dataPath.find(set2) != string::npos) {
+				set = 2;
+			}
+			else {
+				cout << "Please use a valid Data folder" << endl << "Must be either Set1 or Set2" << endl;
+				return;
+			}
 			mode = false;
 		}
 		else {
@@ -90,14 +104,9 @@ void main(int argc, string args[])
 	// object_present is a flag for if there is an object in the scene
 	bool object_present = false;
 	// curr_object is an indexer for the labels
-	int curr_object = -1;
-
-	// Confusion Matrix is for the confusion matrix
-	Confusion_Matrix conMat;
-	// Creates a vector with zeros for the row of the matrix
-	vector<int> class_counts(unique_labels.size());
-	// Tracks object no
-	int class_count = 1;
+	int curr_object = 0;
+	int numRight = 0;
+	int numWrong = 0;
 
 	// The key value represents a key pressed on the keyboard,
 	// where 27 is the ESCAPE key
@@ -225,12 +234,30 @@ void main(int argc, string args[])
 
 				// If in test mode
 				if (mode == false) {
+
 					// Get the class number
 					int class_num = svm_object.predictSVM(svmVector);
 					if (class_num != -1) {
 						// Derive the object's name
 						object_name = unique_labels[class_num];
-						class_counts[class_num] += 1;
+						if (set == 1) {
+							if (class_num == SET1_ORDER[curr_object]) {
+								numRight += 1;
+							}
+							else {
+								numWrong += 1;
+							}
+						}
+						else {
+							if (SET2_ORDER[curr_object] != -1) {
+								if (class_num == SET2_ORDER[curr_object]) {
+									numRight += 1;
+								}
+								else {
+									numWrong += 1;
+								}
+							}
+						}
 					}
 					else {
 						object_name = "Unrecognized Object";
@@ -258,13 +285,7 @@ void main(int argc, string args[])
 			current_object.clear();
 			// Change the object name
 			object_name = "No Object";
-			if (mode == false) {
-				Confusion_Matrix_Row row;
-				row.object_no = "Object " + to_string(class_count++);
-				row.counts = class_counts;
-				conMat.rows.push_back(row);
-				class_counts = vector<int>(unique_labels.size());
-			}
+			curr_object++ ;
 		}
 		// Clone the RGB_component
 		Mat output = curr_frame.RGB_Component.clone();
@@ -285,32 +306,16 @@ void main(int argc, string args[])
 		// Check for keyboard input
 		key = cv::waitKey(10);
 	}
-	if (mode == false) {
-		Calculations calculator;
-		string matrix;
-		for (int i = -1; i < unique_labels.size(); i++) {
-			if (i == -1) {
-				matrix += "Object\t";
-			}
-			else {
-				matrix += unique_labels[i] + "\t";
-			}
-		}
-		matrix += "\n";
-		for (Confusion_Matrix_Row row : conMat.rows) {
-			matrix += row.object_no + "\t";
-			for (int i : row.counts) {
-				matrix += to_string(i) + "\t";
-			}
-			matrix += "\n";
-		}
-		cout << matrix << endl;
-		cout << "Accuracy: " << calculator.accuracy(conMat) <<  "   F-Score:" << calculator.fmeasure(conMat) << endl;
-	}
 	if (mode == true) {
 		cout << "Training of the SVM will now commence, please wait..." << endl;
 		svm_object.trainSVM(kernel, all_objects);
 		cout << "Training complete!" << endl;
+	}
+	else {
+		double total = (double)numRight + (double)numWrong;
+		double accuracy = (numRight / total);
+		accuracy = accuracy * 100;
+		cout << "Accuracy of Model: " << to_string(accuracy) << "%";
 	}
 	return;
 }

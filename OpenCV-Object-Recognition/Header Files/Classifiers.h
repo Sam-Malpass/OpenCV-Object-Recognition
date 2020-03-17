@@ -16,8 +16,11 @@ class SVM {
 	string fileName;
 	// The actual SVM - Needed in test mode
 	Ptr<ml::SVM> model;
+	vector<vector<Mat>> testSet;
 	// balanceData organizes the datasets so that each object has the same number of frames
 	vector<vector<Mat>> balanceData(vector<vector<Mat>> inputs);
+	vector<vector<Mat>> removeTest(vector<vector<Mat>> inputs);
+	void afterTest();
 	// shuffleRows shuffles the training data and the corresponding training labels in the same manner
 	Data shuffleRows(Mat data, vector<int> labels);
 public:
