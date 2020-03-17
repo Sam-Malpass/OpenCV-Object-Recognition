@@ -54,11 +54,9 @@ Mat Preprocessor::thresholdImage(Mat depth, Mat grayscale)
 		// We set it to black, making it really obvious in the output where the object is
 		image = Mat::zeros(image.rows, image.cols, CV_8UC1);
 	}
-
 	// Then we clean up th thresholded image
 	bitwise_and(image, grayscale, grayscale);
 	bitwise_or(image, grayscale, image);
-
 	// Next will use dilation on the thresholded image to joind regions that are separated by a small margin
 	// This is done through blurring
 	// This should result in the small regions that make up the object being blurred together

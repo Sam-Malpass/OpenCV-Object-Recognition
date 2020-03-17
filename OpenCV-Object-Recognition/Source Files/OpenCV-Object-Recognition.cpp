@@ -18,7 +18,7 @@ void main(int argc, string args[])
 
 	// Declare object for the testing
 	Tester tester;
-	args = tester.test(5);
+	args = tester.test(1);
 	argc = sizeof(args);
 
 	// Declare variables for the application to run
@@ -143,7 +143,6 @@ void main(int argc, string args[])
 				imshow("Translated Depth", curr_frame.Depth_Component);
 			}
 		}
-
 		// Initialize a clone of the depth component
 		Mat raw_depth = curr_frame.Depth_Component.clone();
 		// Normalize the depth to better distinguish between arm and object
@@ -306,7 +305,7 @@ void main(int argc, string args[])
 			matrix += "\n";
 		}
 		cout << matrix << endl;
-		cout << "Accuracy: " << calculator.accuracy(conMat) << "   Precision: " << calculator.precision(conMat) << "   Recall: " << calculator.recall(conMat) << "   F-Score:" << calculator.fmeasure(conMat) << endl;
+		cout << "Accuracy: " << calculator.accuracy(conMat) <<  "   F-Score:" << calculator.fmeasure(conMat) << endl;
 	}
 	if (mode == true) {
 		cout << "Training of the SVM will now commence, please wait..." << endl;
