@@ -114,13 +114,14 @@ void SVM::afterTest()
 		conMat.rows.push_back(row);
 		current_object++;
 	}
-
+	cout << "CLASS   \t";
 	for (int i = 0; i < testSet.size(); i++) {
-		cout << "Class " << to_string(i) << "\t";
+		cout << "Cls " << to_string(i) << "\t";
 	}
+	cout << "\n##############################################################################################################################################################";
 	cout << endl;
 	for (Confusion_Matrix_Row row : conMat.rows) {
-		cout << "Class " << row.object_no << "\t";
+		cout << "Class " << row.object_no << " \t";
 		for (int j : row.counts) {
 			cout << to_string(j) << "\t";
 		}
@@ -201,8 +202,9 @@ void SVM::trainSVM(string kernel, vector<vector<Mat>> data)
 	else if (kernel == "rbf") {
 		// An RBF kernel
 		model->setKernel(ml::SVM::RBF);
+		Ptr<ml::ParamGrid> myC = ml::ParamGrid::create(0, 1000, 1);
 		// Train and attempt to optimize hyperparameters
-		model->trainAuto(training_data, ml::ROW_SAMPLE, training_labels, 10, ml::SVM::getDefaultGridPtr(ml::SVM::C), ml::SVM::getDefaultGridPtr(ml::SVM::GAMMA));
+		model->trainAuto(training_data, ml::ROW_SAMPLE, training_labels, 10, myC, ml::SVM::getDefaultGridPtr(ml::SVM::GAMMA));
 	}
 	// Save the model to the file
 	fileHandler.saveModel(model, fileName);

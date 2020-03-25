@@ -16,7 +16,7 @@ void main(int argc, string args[])
 
 	// Declare object for the testing
 	Tester tester;
-	args = tester.test(2);
+	args = tester.test(1);
 	argc = sizeof(args);
 
 	// Declare variables for the application to run
@@ -203,19 +203,26 @@ void main(int argc, string args[])
 				// Declare matrices for the svmVector of the fram
 				Mat standardSize;
 				Mat svmVector;
+				
+				/*
+				// THIS SECTION IS FOR RGB Component
+
 				// Resize each frame/region of interest to a specific size
 				resize(masked(drawing_info.rectangle).clone(), standardSize, SIZE, INTER_CUBIC);
 				imshow("Trimmed Masked", masked(drawing_info.rectangle));
 				// Reshape that matrix to a vector and push it into the svmMatrix
 				svmVector.push_back(standardSize.reshape(1, 1));
+				*/
 
-				/*
+				
+				// Convert to HSV
 				Mat hsv;
 				cvtColor(masked(drawing_info.rectangle).clone(), hsv ,COLOR_BGR2HSV);
 				resize(hsv, standardSize, SIZE, INTER_CUBIC);
+				imshow("Trimmed Masked", masked(drawing_info.rectangle));
 				// Reshape that matrix to a vector and push it into the svmMatrix
 				svmVector.push_back(standardSize.reshape(1, 1));
-				*/
+				
 
 				
 				
